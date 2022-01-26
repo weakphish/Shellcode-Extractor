@@ -2,7 +2,7 @@ ShellcodeExtractor
 ========
 
 SHELLCODE-EXTRACTOR
-Tool used to extract shellcode and lenght from an object/binary file.
+Tool used to extract shellcode and length from an object/binary file.
 
 Copyright (C) 2017  Neetx
 
@@ -24,45 +24,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 ### CONTACTS:
 [Neetx](mailto:neetx@protonmail.com)
 
----
-Tool developed for study and research reasons, I hope it will be useful.
+[Weakphish](mailto:john123allison@gmail.com)
 
-### Usage
+---
+# About 
+This is a fork of Neetx's `shellcode-extractor`, written to be updated to Python 3 and include a feature to dump to a test C program written by St4rl3ss (thanks!).
+
+The latter works by taking the generated shellcode and dumping it into a C file that will check if it works. The Makefile has a rule to compile the test file once generated.
+
+# Usage
 
 Write assembly code, product an object file and the use this script in pipeline to objdump.
 
+Provided is a Hello World assembly file for testing. 
+
 Example:
-
-Let's write spwaning shell assembly code in spawnshell.asm ( NASM )
-
 ```
-	xor eax, eax,
-	push eax
-	push 0x68732f2f
-	push 0x6e69622f
-	mov ebx, esp
-	push eax
-	mov edx, esp
-	push ebx
-	mov ecx, esp
-	mov al, 11
-	int 0x80
+$ make hello_world.o
+$ objdump -d hello_world.o | python3 shellcode_extractor.py 
+$ make shelltest 
+$ ./shelltest
+Hello, world!
 ```
-
-Launch : 
-```
-nobody@nobody:~$ nasm -f elf spawnshell.asm -o output.o
-```
-
-Now we can use our script: 
-```
-nobody@nobody:~$ objdump -d output.o | python shellcode_extractor.py
-
-\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x89\xe2\x53\x89\xe1\xb0\x0b\xcd\x80
-
-Lenght: 25
-```
----
-### Testing:
-
-Insert our shellcode into the empty string in shellcode_tester.c, compile it with gcc and run.
