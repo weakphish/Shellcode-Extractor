@@ -29,7 +29,6 @@ usage_message = "\nError! \n Usage:  objdump -d example.o | python shellcode_ext
 
 if not sys.stdin.isatty():
     try:
-        # Read in object file and 
         shellcode = ""
         length = 0
         while True:
@@ -42,38 +41,38 @@ if not sys.stdin.isatty():
                     for i in opcode:
                         shellcode += "\\x" + i
                         length += 1
-            else: 
+            else:
                 break
         if shellcode == "":
             print("Nothing to extract")
-        else:    
+        else:
             print("\n" + shellcode)
             print("\nLength: " + str(length) + "\n")
             print("Dumping shellcode to shelltest.c ...")
 
             shelltest_text = """
-            #include<stdio.h>
-            #include<string.h>
-            #include <sys/mman.h>
-            #include <unistd.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/mman.h>
+#include <unistd.h>
 
-            /*
-            * This program originally appeared in Dr. Alexandros Kapravelos' CSC 405 class, at NC State
-            * University.
-            */
+/*
+* This program originally appeared in Dr. Alexandros Kapravelos' CSC 405 class, at NC State
+* University.
+*/
 
-            unsigned char print_unity_shellcode[] = "%s";
+unsigned char print_unity_shellcode[] = "%s";
 
-            int main() 
-            {
-                int pagesize = getpagesize(); // Get the page size for this system
-                void *addrOfThePage = print_unity_shellcode - ((unsigned int)print_unity_shellcode %% pagesize); // calculate the address of the page code is on (subtract the difference between the pagesize and the address to code to get the offset)
-                mprotect(addrOfThePage, pagesize, PROT_EXEC | PROT_WRITE); // Set the premissions for the page to be EXECUABLE (PROT_EXEC flag)
-                
-                int (*ret)() = (int(*)())print_unity_shellcode;
-                ret();
-            }
-            """ % shellcode
+int main()
+{
+    int pagesize = getpagesize(); // Get the page size for this system
+    void *addrOfThePage = print_unity_shellcode - ((unsigned int)print_unity_shellcode %% pagesize); // calculate the address of the page code is on
+    mprotect(addrOfThePage, pagesize, PROT_EXEC | PROT_WRITE); // Set the premissions for the page to be EXECUABLE (PROT_EXEC flag)
+    
+    int (*ret)() = (int(*)())print_unity_shellcode;
+    ret();
+}
+    """ % shellcode
 
             with open("shelltest.c", "w+") as f:
                 f.write(shelltest_text)
