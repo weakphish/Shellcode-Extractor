@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 SHELLCODE-EXTRACTOR
 Tool used to extract shellcode and lenght from an object/binary file.
