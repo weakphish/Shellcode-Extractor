@@ -41,7 +41,7 @@ Provided is a Hello World assembly file for testing.
 Example:
 ```
 $ make hello_world.o
-$ objdump -d hello_world.o | python3 shellcode_extractor.py 
+$ objdump -z -d hello_world.o | python3 shellcode_extractor.py 
 $ make shelltest 
 $ ./shelltest
 Hello, world!
